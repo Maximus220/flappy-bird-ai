@@ -3,6 +3,7 @@ body{
   justify-content: space-around;
   align-content: flex-start;
   flex-flow: row wrap;
+  /*background-color: #c0c1c2; /*If you want to save developer's eyes*/
 }
 #optionsPane{
   display: flex;

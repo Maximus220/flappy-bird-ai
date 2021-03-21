@@ -29,6 +29,17 @@ function NEAT(config) {
 		this.creatures.push(new Creature(this.model));
 	}
 
+	this.setCreatureNum = function (num){ //That function isn't opitmized at all ; will be redone later
+		if(this.populationSize < num){
+			for (let i = 0; i < num-this.populationSize; i++) {
+				this.creatures.push(new Creature(this.model));
+			}
+			this.populationSize = num;
+		}else if(this.populationSize > num){
+			this.populationSize = num;
+		}
+	}
+
 	this.mutate = function () { // Parses every creature's genes passes them to the mutation function and sets their new (mutated) genes.
 		for (let i = 0; i < this.populationSize; i++) {
 			let genes = this.creatures[i].flattenGenes();
@@ -81,7 +92,7 @@ function NEAT(config) {
 		this.crossover();
 		this.mutate();
 		this.generation++;
-		console.log('Generation: ' + this.generation);
+		//console.log('Generation: ' + this.generation);
 	}
 
 	this.bestCreature = function () { // Returns the index of the best creature from the previous generation.
@@ -107,34 +118,6 @@ function NEAT(config) {
 
 	this.setInputs = function (array, index) { // Sets the inputs of the creature indexed as "index".
 		this.creatures[index].setInputs(array);
-	}
-
-	this.export = function (index) {
-		let data = [];
-		data.push(JSON.parse(JSON.stringify(this.exportModel)));
-		data.push([]);
-		if (index) {
-			data[1].push(this.creatures[index].flattenGenes());
-		} else {
-			for (let i = 0; i < this.populationSize; i++) {
-				data[1].push(this.creatures[i].flattenGenes());
-			}
-		}
-		return data;
-	}
-
-	this.import = function (data) {
-		if (JSON.stringify(data[0]) === JSON.stringify(this.exportModel)) {
-			console.log('Importing ' + data[1].length + ' creature(s)');
-			for (let i = 0; i < data[1].length; i++) {
-				let newCreature = new Creature(this.model);
-				newCreature.setFlattenedGenes(data[1][i]);
-				this.creatures.push(newCreature);
-				this.populationSize++;
-			}
-		} else {
-			throw "Invalid model!";
-		}
 	}
 
 	this.getTensorflowModel = function(index) { // Generate the requested tensorflow model.
@@ -197,7 +180,7 @@ function Creature(model) {
 	}
 
 	this.desicion = function () { // Some spaghetti code that returns the desicion of the creature.
-		let index = -1; 
+		let index = -1;
 		let max = -Infinity;
 		for (let i = 0; i < this.network.layers[this.network.layers.length - 1].nodes.length; i++) {
 			if (this.network.layers[this.network.layers.length - 1].nodes[i].value > max) {
@@ -228,7 +211,7 @@ function Network(model) { // Neural Network.
 	}
 
 	this.getTensorflowModel = function () { // Generates a tensorflow model from the current network.
-		
+
 		// Collect the weights from each layer in the network.
 		let weights = [];
 		for(let i = 0; i < this.layers.length - 1; i++) {
@@ -385,4 +368,3 @@ let mutate = { // Mutation function (More to come!).
 		return genes;
 	}
 }
-

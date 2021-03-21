@@ -52,14 +52,14 @@ let config = {
 };
 let neat;
 
-function addScore(data) {
+function addScore(data) { //Chart update function
     scoreChart.data.labels.push(neat.generation);
 		scoreChart.data.datasets.forEach((dataset) => {
         dataset.data.push(data);
     });
     scoreChart.update();
 }
-function randomB(min, max) {
+function randomB(min, max) { //Random function
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
@@ -74,7 +74,7 @@ function setup(){
     window.canvas = createCanvas(600, 800)/*.position(windowWidth/2-canvas.width/2, 20)*/;
 		window.canvas.parent('mainCanvas');
 		//Sliders
-		speedSlider = createSlider(0, 15, 1);
+		speedSlider = createSlider(0, 30, 1);
 		speedSlider.parent('speedSlider');
 
 		creatureSlider = createSlider(1, 1000, 200);
@@ -95,7 +95,7 @@ function setup(){
 function draw(){
 		globalSpeed=speedSlider.value();
 		document.getElementById('speedDisplay').innerHTML = globalSpeed;
-		document.getElementById('creatureDisplay').innerHTML = numGen;
+		document.getElementById('creatureDisplay').innerHTML = creatureSlider.value();
 
 		visualizeSights = document.getElementById('boxSights').checked;
 		visualizeHitboxes = document.getElementById('boxHitboxes').checked;
@@ -115,42 +115,54 @@ function draw(){
 
     background(135,206,250);
 
-
-		for (let n = 0; n < globalSpeed; n++) {
-			ground.show();
-	    pipePair.show();
-	    pipePair2.show();
-
-	    if(pipePair.offscreen()){
-	      pipePair = new PipePair();
-	    }else{
-	      pipePair.update();
-	    }
-	    if(pipePair2.offscreen()){
-	      pipePair2 = new PipePair();
-	    }else{
-	      pipePair2.update();
-	    }
-	    ground.update();
-	    for(i=0;i<numGen;i++){
-	      neat.setInputs(birds[i].inputss(),i);
-	    }
-	    neat.feedForward();
-	    for(i=0;i<numGen;i++){
-				if(birds[i].alive){
-		      birds[i].update();
-		      birds[i].show();
-		      if(neat.getDesicions()[i]==-1){
-		        birds[i].flap();
+		if(globalSpeed!=0){
+			for (let n = 0; n < globalSpeed; n++) {
+				//BG and components display
+				ground.show();
+		    pipePair.show();
+		    pipePair2.show();
+		    if(pipePair.offscreen()){
+		      pipePair = new PipePair();
+		    }else{
+		      pipePair.update();
+		    }
+		    if(pipePair2.offscreen()){
+		      pipePair2 = new PipePair();
+		    }else{
+		      pipePair2.update();
+		    }
+		    ground.update();
+				//Creatures display and neat implementation
+		    for(i=0;i<numGen;i++){
+		      neat.setInputs(birds[i].inputss(),i);
+		    }
+		    neat.feedForward();
+		    for(i=0;i<numGen;i++){
+					if(birds[i].alive){
+			      birds[i].update();
+			      birds[i].show();
+			      if(neat.getDesicions()[i]==-1){
+			        birds[i].flap();
+			      }
+					}
+		    }
+		    if(allDead()){
+		      for(i=0;i<numGen;i++){
+		        neat.setFitness(birds[i].timeScore/2+birds[i].score*1000+birds[i].interScore*50,i);
 		      }
+		      start();
+		    }
+			}
+		}else{
+			ground.show();
+			pipePair.show();
+			pipePair2.show();
+			for(i=0;i<numGen;i++){
+				if(birds[i].alive){
+					birds[i].show();
 				}
-	    }
-	    if(allDead()){
-	      for(i=0;i<numGen;i++){
-	        neat.setFitness(birds[i].timeScore/2+birds[i].score*1000+birds[i].interScore*50,i);
-	      }
-	      start();
-	    }
+			}
+			allDead(); //Show score
 		}
 }
 
@@ -188,6 +200,9 @@ function allDead(){
 
 //Launch a run
 function start(){
+	numGen=creatureSlider.value();
+	neat.setCreatureNum(numGen);
+
   pipePair = new PipePair();
   pipePair2 = new PipePair();
   pipePair.setX(canvas.width);
