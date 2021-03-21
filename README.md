@@ -1,10 +1,10 @@
 # FlappyBirdAI
 Flappy Bird AI using Neat algorithm.
 
-## WARNING
+## ⚠️ WARNING ⚠️
 Some devices could encounter issues by increasing the population size or the speed too much. Don't increase these values if you think your device isn't performant enough.
 
-## TO-DO
+## 📋 TO-DO 📋
 * Make my own NEAT Lib
 * Finish option list
   * Add gravity options
