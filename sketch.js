@@ -93,77 +93,77 @@ function setup(){
     start();
 }
 function draw(){
-		globalSpeed=speedSlider.value();
-		document.getElementById('speedDisplay').innerHTML = globalSpeed;
-		document.getElementById('creatureDisplay').innerHTML = creatureSlider.value();
+	globalSpeed=speedSlider.value();
+	document.getElementById('speedDisplay').innerHTML = globalSpeed;
+	document.getElementById('creatureDisplay').innerHTML = creatureSlider.value();
 
-		visualizeSights = document.getElementById('boxSights').checked;
-		visualizeHitboxes = document.getElementById('boxHitboxes').checked;
+	visualizeSights = document.getElementById('boxSights').checked;
+	visualizeHitboxes = document.getElementById('boxHitboxes').checked;
 
-		if(visualizeHitboxes){
-			document.getElementById('hitBoxesSizeDisplay').style.display = "block";
-			hitboxesSlider.show();
-			hitboxesSize=hitboxesSlider.value();
-			document.getElementById('hitBoxesSizeDisplay').innerHTML = hitboxesSize;
-		}else{
-			hitboxesSlider.hide();
-			document.getElementById('hitBoxesSizeDisplay').style.display = "none";
-		}
+	if(visualizeHitboxes){
+		document.getElementById('hitBoxesSizeDisplay').style.display = "block";
+		hitboxesSlider.show();
+		hitboxesSize=hitboxesSlider.value();
+		document.getElementById('hitBoxesSizeDisplay').innerHTML = hitboxesSize;
+	}else{
+		hitboxesSlider.hide();
+		document.getElementById('hitBoxesSizeDisplay').style.display = "none";
+	}
 
-		document.getElementById('mutationDisplay').innerHTML= ("Mutation rate : " + mutationRate);
-		document.getElementById('populationDisplay').innerHTML= ("Population size : "+numGen);
+	document.getElementById('mutationDisplay').innerHTML= ("Mutation rate : " + mutationRate);
+	document.getElementById('populationDisplay').innerHTML= ("Population size : "+numGen);
 
-    background(135,206,250);
+  background(135,206,250);
 
-		if(globalSpeed!=0){
-			for (let n = 0; n < globalSpeed; n++) {
-				//BG and components display
-				ground.show();
-		    pipePair.show();
-		    pipePair2.show();
-		    if(pipePair.offscreen()){
-		      pipePair = new PipePair();
-		    }else{
-		      pipePair.update();
-		    }
-		    if(pipePair2.offscreen()){
-		      pipePair2 = new PipePair();
-		    }else{
-		      pipePair2.update();
-		    }
-		    ground.update();
-				//Creatures display and neat implementation
-		    for(i=0;i<numGen;i++){
-		      neat.setInputs(birds[i].inputss(),i);
-		    }
-		    neat.feedForward();
-		    for(i=0;i<numGen;i++){
-					if(birds[i].alive){
-			      birds[i].update();
-			      birds[i].show();
-			      if(neat.getDesicions()[i]==-1){
-			        birds[i].flap();
-			      }
-					}
-		    }
-		    if(allDead()){
-		      for(i=0;i<numGen;i++){
-		        neat.setFitness(birds[i].timeScore/2+birds[i].score*1000+birds[i].interScore*50,i);
-		      }
-		      start();
-		    }
-			}
-		}else{
+	if(globalSpeed!=0){
+		for (let n = 0; n < globalSpeed; n++) {
+			//BG and components display
 			ground.show();
-			pipePair.show();
-			pipePair2.show();
-			for(i=0;i<numGen;i++){
+		   pipePair.show();
+		   pipePair2.show();
+		   if(pipePair.offscreen()){
+		     pipePair = new PipePair();
+		   }else{
+		     pipePair.update();
+		   }
+		   if(pipePair2.offscreen()){
+		     pipePair2 = new PipePair();
+		   }else{
+		     pipePair2.update();
+		   }
+		   ground.update();
+			//Creatures display and neat implementation
+		   for(i=0;i<numGen;i++){
+		     neat.setInputs(birds[i].inputss(),i);
+		   }
+		   neat.feedForward();
+		   for(i=0;i<numGen;i++){
 				if(birds[i].alive){
-					birds[i].show();
+			     birds[i].update();
+			     birds[i].show();
+			     if(neat.getDesicions()[i]==-1){
+			       birds[i].flap();
+			     }
 				}
-			}
-			allDead(); //Show score
+		   }
+		   if(allDead()){
+		     for(i=0;i<numGen;i++){
+		       neat.setFitness(birds[i].timeScore/2+birds[i].score*1000+birds[i].interScore*50,i);
+		     }
+		     start();
+		   }
 		}
+	}else{
+		ground.show();
+		pipePair.show();
+		pipePair2.show();
+		for(i=0;i<numGen;i++){
+			if(birds[i].alive){
+				birds[i].show();
+			}
+		}
+		allDead(); //Show score
+	}
 }
 
 //Text displays
@@ -200,10 +200,11 @@ function allDead(){
 
 //Launch a run
 function start(){
+
 	numGen=creatureSlider.value();
 	neat.setCreatureNum(numGen);
 
-  pipePair = new PipePair();
+	pipePair = new PipePair();
   pipePair2 = new PipePair();
   pipePair.setX(canvas.width);
   pipePair2.setX(canvas.width*1.5+pipePair2.topPipe.width);
