@@ -5,7 +5,7 @@ body{
   flex-flow: row wrap;
   /*background-color: #c0c1c2; /*If you want to save developer's eyes*/
 }
-#optionsPane{
+.optionsPane{
   display: flex;
   justify-content: center;
   align-content: flex-start;

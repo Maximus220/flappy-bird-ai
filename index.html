@@ -2,9 +2,15 @@
   <head>
     <link rel="stylesheet" href="Ressources/css.css">
 
-    <script language="javascript" type="text/javascript" src="Libs/NEAT_browser.js"></script>
     <script language=" javascript" type="text/javascript" src="Libs/p5.js"></script>
     <script language="javascript" type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+    <script language=" javascript" type="text/javascript" src="Neat/NeuralNetwork/ActivationFunction.js"></script>
+    <script language=" javascript" type="text/javascript" src="Neat/NeuralNetwork/Layer.js"></script>
+    <script language=" javascript" type="text/javascript" src="Neat/NeuralNetwork/Network.js"></script>
+    <script language=" javascript" type="text/javascript" src="Neat/NeuralNetwork/Node.js"></script>
+    <script language=" javascript" type="text/javascript" src="Neat/Neat.js"></script>
+    <script language=" javascript" type="text/javascript" src="Neat/Creature.js"></script>
 
     <script language=" javascript" type="text/javascript" src="sketch.js"></script>
     <script language=" javascript" type="text/javascript" src="Classes/player.js"></script>
@@ -15,9 +21,9 @@
   </head>
   <body>
 
-    <div id="optionsPane">
+    <div class="optionsPane">
 
-      <label for="informationsDisplay">Global informations : </label>
+      <label for="informationsDisplay">Global information : </label>
       <div id="informationsDisplay" class="infoDiv optDiv">
         <span id="generation"></span>
         <span id="alive"></span>
@@ -43,20 +49,29 @@
           <span id="hitboxesSizeSlider"></span>
           <span id="hitBoxesSizeDisplay"></span>
         </div>
+        <div class="option">
+          <button type="button" name="button" onclick="killAll();">Kill all</button>
+        </div>
       </div>
 
-      <label for="neatInformations">Neat informations : </label>
+      <label for="neatInformations">Neat information : </label>
       <div id="neatInformations" class="infoDiv optDiv">
         <span id="mutationDisplay"></span>
         <span id="populationDisplay"></span>
+        <span id="bestFitDisplay"></span>
       </div>
 
-      <label for="parameters">Neat parameters (WIP) : </label>
+      <label for="parameters">Neat parameters : </label>
       <div id="neatParameters" class="optDiv">
         <div class="option">
           <label for="creatureSlider">Creature number : </label>
           <span id="creatureSlider"></span>
           <span id="creatureDisplay"></span>
+        </div>
+        <div class="option">
+          <label for="mutationRateSlider">Mutation rate : </label>
+          <span id="mutationRateSlider"></span>
+          <span id="mutationRateDisplay"></span>
         </div>
       </div>
 
@@ -75,6 +90,7 @@
     </div>
 
     <div id="mainCanvas"></div>
+
 
   </body>
 </html>

@@ -20,15 +20,19 @@ class Bird{
     this.index = index;
     this.interScore=0;
 
-
   }
 
-  show(){
+
+  show(isBest = false){
     //Use sprite
     //image(this.img, this.x,this.y);
 
     //Represent birds as rectangles
-    fill(255,255,255);
+    if(isBest){
+      fill('red');
+    }else{
+      fill('white');
+    }
     rect(this.x,this.y, this.size,this.height);
 
     //Hitbox visualizer

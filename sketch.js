@@ -1,3 +1,4 @@
+
 //Game variables
 var gamSpeed = 3;//3
 var gravity = 0.2;//0.2
@@ -6,11 +7,12 @@ var player;
 var pipePair;
 var pipePair2;
 var ground;
-var scores = [0];
+var scores = [];
+var bestFit = 0; ////////////// TO DO IN THE FURUTRE
 
 //Neat parameters
 var birds = [];
-let numGen=200;
+let numGen=20;
 let finish=false;
 var mutationRate = 0.05;
 
@@ -27,6 +29,7 @@ var creatureSlide;
 var cBox1;
 var hitboxesSlider;
 var hitboxesSize=3;
+var mutationRateSlider;
 
 //Chart
 var ctx;
@@ -41,15 +44,16 @@ var chartData = {datasets:[{
 
 
 let config = {
-	model: [
-		{nodeCount: 8, type: "input"},
-		{nodeCount: 1, type: "output", activationfunc: activation.SOFTMAX}
-	],
-	mutationRate: mutationRate,
-	crossoverMethod: crossover.RANDOM,
-	mutationMethod: mutate.RANDOM,
-	populationSize: numGen
-};
+  layer: [
+    {
+      node: 8
+    },
+    {
+      node: 1,
+      actFunction: 'SIGMOID'
+    }
+  ]
+}
 let neat;
 
 function addScore(data) { //Chart update function
@@ -71,17 +75,20 @@ function preload(){
 
 function setup(){
 		//Main canvas
-    window.canvas = createCanvas(600, 800)/*.position(windowWidth/2-canvas.width/2, 20)*/;
+    window.canvas = createCanvas(800, 800)/*.position(windowWidth/2-canvas.width/2, 20)*/;
 		window.canvas.parent('mainCanvas');
 		//Sliders
 		speedSlider = createSlider(0, 30, 1);
 		speedSlider.parent('speedSlider');
 
-		creatureSlider = createSlider(1, 1000, 200);
+		creatureSlider = createSlider(1, 1000, numGen);
 		creatureSlider.parent('creatureSlider');
 
 		hitboxesSlider = createSlider(1, 15, 3);
 		hitboxesSlider.parent('hitboxesSizeSlider');
+
+		mutationRateSlider = createSlider(0.01, 1, mutationRate, 0.01);
+		mutationRateSlider.parent('mutationRateSlider');
 
 		//Chart
 		ctx = document.getElementById('scoreChart').getContext('2d');
@@ -89,13 +96,25 @@ function setup(){
 
 		//Main components
     ground = new Ground();
-    neat = new NEAT(config);
-    start();
+    neat = new Neat(numGen, mutationRate, config); //////////////////////////////////////////////////
+
+
+    pipePair = new PipePair();
+    pipePair2 = new PipePair();
+    pipePair.setX(canvas.width);
+    pipePair2.setX(canvas.width*1.5+pipePair2.topPipe.width);
+
+  	addScore(scores[neat.generation]);
+
+    for(x=0; x<numGen;x++){
+      birds[x] = new Bird(canvas.width/4, canvas.height/2+1*x, bird,x);
+    }
 }
 function draw(){
 	globalSpeed=speedSlider.value();
 	document.getElementById('speedDisplay').innerHTML = globalSpeed;
 	document.getElementById('creatureDisplay').innerHTML = creatureSlider.value();
+	document.getElementById('mutationRateDisplay').innerHTML = mutationRateSlider.value();
 
 	visualizeSights = document.getElementById('boxSights').checked;
 	visualizeHitboxes = document.getElementById('boxHitboxes').checked;
@@ -135,21 +154,28 @@ function draw(){
 			//Creatures display and neat implementation
 		   for(i=0;i<numGen;i++){
 		     neat.setInputs(birds[i].inputss(),i);
+				 neat.setFitness(birds[i].timeScore/2+birds[i].score*1000+birds[i].interScore*50,i);
 		   }
 		   neat.feedForward();
+			 let tempBest = neat.getBestCreature();
+			 document.getElementById('bestFitDisplay').innerHTML=("Best fitness : "+tempBest[0].fit);
 		   for(i=0;i<numGen;i++){
 				if(birds[i].alive){
 			     birds[i].update();
-			     birds[i].show();
-			     if(neat.getDesicions()[i]==-1){
+					 if(tempBest[1]===i){
+						 birds[i].show(true);
+					 }else{
+						 birds[i].show();
+					 }
+			     if(neat.getOutput(i)[0]>=0.5){
 			       birds[i].flap();
 			     }
 				}
 		   }
 		   if(allDead()){
-		     for(i=0;i<numGen;i++){
+		     /*for(i=0;i<numGen;i++){
 		       neat.setFitness(birds[i].timeScore/2+birds[i].score*1000+birds[i].interScore*50,i);
-		     }
+		     }*/
 		     start();
 		   }
 		}
@@ -164,7 +190,27 @@ function draw(){
 		}
 		allDead(); //Show score
 	}
+
+
+	//Display network
+	/*let nnDS = [100, 200];//nnDisplaySize -> make it a const
+	let bestNN = neat.getBestCreature()[0].nn;
+	for(let x=0;x<bestNN.layer.length;x++){
+		line(0, )
+	}*/
+
 }
+
+
+function killAll(){
+	for(i=0;i<numGen;i++){
+	 if(birds[i].alive){
+		 birds[i].die();
+	 }
+ }
+}
+
+
 
 //Text displays
 function actuScore(bird){
@@ -204,6 +250,9 @@ function start(){
 	numGen=creatureSlider.value();
 	neat.setCreatureNum(numGen);
 
+	mutationRate= mutationRateSlider.value();
+	neat.setMutationRate(mutationRate);
+
 	pipePair = new PipePair();
   pipePair2 = new PipePair();
   pipePair.setX(canvas.width);
@@ -214,5 +263,5 @@ function start(){
   for(x=0; x<numGen;x++){
     birds[x] = new Bird(canvas.width/4, canvas.height/2+1*x, bird,x);
   }
-	neat.doGen();
+	neat.makePop();
 }
