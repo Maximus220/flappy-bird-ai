@@ -98,15 +98,12 @@ class Bird{
     }
   }
   die(){
-    //neat.setFitness(this.timeScore,this.index);
     this.alive=false;
-    //console.log("Fitness : "+(this.timeScore/2+this.score*1000+this.interScore*50)+" Final time score : " +this.timeScore + " - Final global score : "+this.score+" - Intermediate score : "+this.interScore);
   }
 
   inputss(){
     let input = [];
 
-    //Template 1 : Max_score:3005 ; Inputs:8
     input[0]=int(dist(this.x+this.size/2,this.y+this.height/2,(this.closest().getX()+this.closest().bottomPipe.width),(this.closest().topPipe.topY+this.closest().topPipe.height)));
     input[1]=int(dist(this.x+this.size/2,this.y+this.height/2,(this.closest().getX()+this.closest().bottomPipe.width),this.closest().bottomPipe.topY));
     input[2]=(this.y+this.height/2)-(this.closest().topPipe.topY+this.closest().topPipe.height);
@@ -118,17 +115,6 @@ class Bird{
     input[7]=int(dist(this.x+this.size/2,this.y+this.height/2,this.closest().getX(),this.closest().bottomPipe.topY));
     */
 
-
-    //input[8]=this.velY;
-
-    //Template 2 : Max_score:8 ; Inputs:5
-    /*input[0]=(this.y+this.height/2)-(this.closest().topPipe.topY+this.closest().topPipe.height);
-    input[1]=this.closest().bottomPipe.topY-(this.y+this.height/2);
-    input[2]=this.closest().getX()-this.x;
-    input[3]=this.y;
-    input[4]=this.velY;*/
-
-    //console.log(input[0]+" - "+input[1]+" - "+input[2]+" - "+input[3]+" - "+input[4]+" - "+input[5]);
     return input;
   }
   closest(){
