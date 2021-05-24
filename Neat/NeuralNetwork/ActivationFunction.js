@@ -21,7 +21,7 @@ let actFunctions = {
     if(sum>0) return 1;
     else return 0;
   },
-	SOFTMAX: function(array){
+	SOFTMAX: function(array){ //Doesn't work yet (return an array)
     let results = [];
     let sum;
     for(let y=0; y<array.length;y++){
@@ -34,13 +34,5 @@ let actFunctions = {
 	},
   SUM: function(array){
     return array.reduce((a, b) => a + b, 0);
-  }
-}
-
-let dActFunctions = {
-  SIGMOID: function(array){
-    let sum = array.reduce((a, b) => a + b, 0);
-    let sig = (1/(1+Math.exp(-sum)));
-    return sig * (1-sig);
   }
 }

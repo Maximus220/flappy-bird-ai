@@ -1,4 +1,3 @@
-
 //Game variables
 var gamSpeed = 3;//3
 var gravity = 0.2;//0.2
@@ -8,13 +7,23 @@ var pipePair;
 var pipePair2;
 var ground;
 var scores = [];
-var bestFit = 0; ////////////// TO DO IN THE FURUTRE
 
 //Neat parameters
 var birds = [];
 let numGen=20;
-let finish=false;
 var mutationRate = 0.05;
+let config = {
+  layer: [
+    {
+      node: 4
+    },
+    {
+      node: 1,
+      actFunction: 'SIGMOID'
+    }
+  ]
+}
+let neat;
 
 //Game parameters
 var visualizeSights=false;
@@ -32,7 +41,7 @@ var hitboxesSize=3;
 var mutationRateSlider;
 //NN Display
 var nnDS = [300,250];//nnDisplaySize
-var nnMove = [600,520];
+var nnMove = [550,520];
 const nodeSize = 15;
 
 //Chart
@@ -44,21 +53,6 @@ var chartData = {datasets:[{
 	fill: false,
 	borderColor: ['#3669cf']
 }], labels:[]};
-
-
-
-let config = {
-  layer: [
-    {
-      node: 4
-    },
-    {
-      node: 1,
-      actFunction: 'SIGMOID'
-    }
-  ]
-}
-let neat;
 
 function addScore(data) { //Chart update function
     scoreChart.data.labels.push(neat.generation);
@@ -108,7 +102,7 @@ function setup(){
     pipePair.setX(canvas.width);
     pipePair2.setX(canvas.width*1.5+pipePair2.topPipe.width);
 
-  	addScore(scores[neat.generation]);
+  	//addScore(scores[neat.generation]);
 
     for(x=0; x<numGen;x++){
       birds[x] = new Bird(canvas.width/4, canvas.height/2+1*x, bird,x);
@@ -183,9 +177,6 @@ function draw(){
 					}
 				}
 		   if(allDead()){
-		     /*for(i=0;i<numGen;i++){
-		       neat.setFitness(birds[i].timeScore/2+birds[i].score*1000+birds[i].interScore*50,i);
-		     }*/
 		     start();
 		   }
 		}
@@ -203,40 +194,9 @@ function draw(){
 
 
 	//Display network
-	let bestNN = neat.getBestCreature()[0].nn;
-	for(let x=0;x<bestNN.layer.length;x++){
-		noStroke();
-		let locX = nnDS.x/bestNN.layer.length*x+nnMove.x;
-		//line(locX, 0+nnMove.y, locX, nnDS.y+nnMove.y);
-		for(let y=0;y<bestNN.layer[x].node.length;y++){
-			let locY = nnDS.y/(bestNN.layer[x].node.length+1)*(y+1)+nnMove.y;
-			for(let z=0;z<bestNN.layer[x].node[y].weights.length;z++){
-				strokeWeight(map(bestNN.layer[x].node[y].weights[z], -1, 1, -5, 5)); //arbitrary values
-				if(bestNN.layer[x].node[y].weights[z]>0){
-					stroke('red');
-				}else if(bestNN.layer[x].node[y].weights[z]<0){
-					stroke('blue');
-				}else{
-					stroke('white');
-				}
-				line(locX, locY, nnDS.x/bestNN.layer.length*(x+1)+nnMove.x, nnDS.y/(bestNN.layer[x+1].node.length+1)*(z+1)+nnMove.y);
-			}
-			noStroke();
-			if(x===bestNN.layer.length-1){
-				if(bestNN.layer[x].node[y].value>0.5){
-					fill('red');
-				}
-			}else{
-				textSize(15);
-				text(floor(bestNN.layer[x].node[y].value).toString(), locX-50, locY+nodeSize/2);
-				fill('white');
-			}
-			ellipse(locX, locY, nodeSize);
-		}
-	}
-
+	let bestI = neat.getBestCreature()[1];
+	image(neat.getNeuralDisplay(bestI, nnDS.x, nnDS.y, nodeSize) ,nnMove.x,nnMove.y);
 }
-
 
 function killAll(){
 	for(i=0;i<numGen;i++){
@@ -244,6 +204,16 @@ function killAll(){
 		 birds[i].die();
 	 }
  }
+}
+
+function restart(){
+	for(i=0;i<numGen;i++){
+	 if(birds[i].alive){
+		 birds[i].die();
+	 }
+ 	}
+	neat = new Neat(numGen, mutationRate, config);
+	start(false);
 }
 
 
@@ -281,7 +251,7 @@ function allDead(){
 }
 
 //Launch a run
-function start(){
+function start(addValue=true){
 
 	numGen=creatureSlider.value();
 	neat.setCreatureNum(numGen);
@@ -299,5 +269,7 @@ function start(){
   for(x=0; x<numGen;x++){
     birds[x] = new Bird(canvas.width/4, canvas.height/2+1*x, bird,x);
   }
-	neat.makePop();
+	if(addValue){
+		neat.makePop();
+	}
 }

@@ -118,5 +118,41 @@ class Neat{
     this.mutationRate = mutationRate;
   }
 
+  getNeuralDisplay(creatureIndex, width, height, nodeSize = 15){
+    let display = createGraphics(width, height);
+    let nn = this.pop[creatureIndex].nn;
+    for(let x=0;x<nn.layer.length;x++){
+  		display.noStroke();
+  		let locX = width/nn.layer.length*x+50;
+  		//line(locX, 0, locX, height);
+  		for(let y=0;y<nn.layer[x].node.length;y++){
+  			let locY = height/(nn.layer[x].node.length+1)*(y+1);
+  			for(let z=0;z<nn.layer[x].node[y].weights.length;z++){
+  				display.strokeWeight(map(nn.layer[x].node[y].weights[z], -1, 1, -5, 5)); //arbitrary values
+  				if(nn.layer[x].node[y].weights[z]>0){
+  					display.stroke('red');
+  				}else if(nn.layer[x].node[y].weights[z]<0){
+  					display.stroke('blue');
+  				}else{
+  					display.stroke('white');
+  				}
+  				display.line(locX, locY, width/nn.layer.length*(x+1)+50, height/(nn.layer[x+1].node.length+1)*(z+1));
+  			}
+  			display.noStroke();
+  			if(x===nn.layer.length-1){
+  				if(nn.layer[x].node[y].value>0.5){
+  					display.fill('red');
+  				}
+  			}else{
+          display.fill('white');
+  				display.textSize(15);
+  				display.text(floor(nn.layer[x].node[y].value).toString(), locX-50, locY+nodeSize/2);
+  			}
+  			display.ellipse(locX, locY, nodeSize);
+  		}
+  	}
+    return display;
+  }
+
 
 }
