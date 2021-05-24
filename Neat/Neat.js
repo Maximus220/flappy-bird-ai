@@ -48,7 +48,7 @@ class Neat{
   }
 
   getBestCreature(){
-    let temp = [{fit: 0},-1];
+    let temp = [{fit: -1},0];
     for(let x=0;x<this.pop.length;x++){
       if(this.pop[x].fit>temp[0].fit){
         temp = [this.pop[x], x];

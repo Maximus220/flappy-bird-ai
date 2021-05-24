@@ -26,6 +26,8 @@ class Bird{
   show(isBest = false){
     //Use sprite
     //image(this.img, this.x,this.y);
+    strokeWeight(1);
+    stroke(0)
 
     //Represent birds as rectangles
     if(isBest){
@@ -107,13 +109,16 @@ class Bird{
     //Template 1 : Max_score:3005 ; Inputs:8
     input[0]=int(dist(this.x+this.size/2,this.y+this.height/2,(this.closest().getX()+this.closest().bottomPipe.width),(this.closest().topPipe.topY+this.closest().topPipe.height)));
     input[1]=int(dist(this.x+this.size/2,this.y+this.height/2,(this.closest().getX()+this.closest().bottomPipe.width),this.closest().bottomPipe.topY));
-    input[2]=int(dist(this.x+this.size/2,this.y+this.height/2,this.closest().getX(),(this.closest().topPipe.topY+this.closest().topPipe.height)));
-    input[3]=int(dist(this.x+this.size/2,this.y+this.height/2,this.closest().getX(),this.closest().bottomPipe.topY));
+    input[2]=(this.y+this.height/2)-(this.closest().topPipe.topY+this.closest().topPipe.height);
+    input[3]=this.closest().bottomPipe.topY-(this.y+this.height/2);
+    /*
     input[4]=this.y;
     input[5]=this.closest().getX()-this.x;
+    input[6]=int(dist(this.x+this.size/2,this.y+this.height/2,this.closest().getX(),(this.closest().topPipe.topY+this.closest().topPipe.height)));
+    input[7]=int(dist(this.x+this.size/2,this.y+this.height/2,this.closest().getX(),this.closest().bottomPipe.topY));
+    */
 
-    input[6]=(this.y+this.height/2)-(this.closest().topPipe.topY+this.closest().topPipe.height);
-    input[7]=this.closest().bottomPipe.topY-(this.y+this.height/2);
+
     //input[8]=this.velY;
 
     //Template 2 : Max_score:8 ; Inputs:5

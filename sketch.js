@@ -30,6 +30,10 @@ var cBox1;
 var hitboxesSlider;
 var hitboxesSize=3;
 var mutationRateSlider;
+//NN Display
+var nnDS = [300,250];//nnDisplaySize
+var nnMove = [600,520];
+const nodeSize = 15;
 
 //Chart
 var ctx;
@@ -46,7 +50,7 @@ var chartData = {datasets:[{
 let config = {
   layer: [
     {
-      node: 8
+      node: 4
     },
     {
       node: 1,
@@ -109,6 +113,9 @@ function setup(){
     for(x=0; x<numGen;x++){
       birds[x] = new Bird(canvas.width/4, canvas.height/2+1*x, bird,x);
     }
+		nnDS = createVector(nnDS[0], nnDS[1]);
+		nnMove = createVector(nnMove[0], nnMove[1]);
+
 }
 function draw(){
 	globalSpeed=speedSlider.value();
@@ -162,9 +169,7 @@ function draw(){
 		   for(i=0;i<numGen;i++){
 				if(birds[i].alive){
 			     birds[i].update();
-					 if(tempBest[1]===i){
-						 birds[i].show(true);
-					 }else{
+					 if(tempBest[1]!=i){
 						 birds[i].show();
 					 }
 			     if(neat.getOutput(i)[0]>=0.5){
@@ -172,6 +177,11 @@ function draw(){
 			     }
 				}
 		   }
+			 if(tempBest[1]>=0&&tempBest[1]<numGen){
+				 if(birds[tempBest[1]].alive){
+				 	birds[tempBest[1]].show(true);
+					}
+				}
 		   if(allDead()){
 		     /*for(i=0;i<numGen;i++){
 		       neat.setFitness(birds[i].timeScore/2+birds[i].score*1000+birds[i].interScore*50,i);
@@ -193,11 +203,37 @@ function draw(){
 
 
 	//Display network
-	/*let nnDS = [100, 200];//nnDisplaySize -> make it a const
 	let bestNN = neat.getBestCreature()[0].nn;
 	for(let x=0;x<bestNN.layer.length;x++){
-		line(0, )
-	}*/
+		noStroke();
+		let locX = nnDS.x/bestNN.layer.length*x+nnMove.x;
+		//line(locX, 0+nnMove.y, locX, nnDS.y+nnMove.y);
+		for(let y=0;y<bestNN.layer[x].node.length;y++){
+			let locY = nnDS.y/(bestNN.layer[x].node.length+1)*(y+1)+nnMove.y;
+			for(let z=0;z<bestNN.layer[x].node[y].weights.length;z++){
+				strokeWeight(map(bestNN.layer[x].node[y].weights[z], -1, 1, -5, 5)); //arbitrary values
+				if(bestNN.layer[x].node[y].weights[z]>0){
+					stroke('red');
+				}else if(bestNN.layer[x].node[y].weights[z]<0){
+					stroke('blue');
+				}else{
+					stroke('white');
+				}
+				line(locX, locY, nnDS.x/bestNN.layer.length*(x+1)+nnMove.x, nnDS.y/(bestNN.layer[x+1].node.length+1)*(z+1)+nnMove.y);
+			}
+			noStroke();
+			if(x===bestNN.layer.length-1){
+				if(bestNN.layer[x].node[y].value>0.5){
+					fill('red');
+				}
+			}else{
+				textSize(15);
+				text(floor(bestNN.layer[x].node[y].value).toString(), locX-50, locY+nodeSize/2);
+				fill('white');
+			}
+			ellipse(locX, locY, nodeSize);
+		}
+	}
 
 }
 
