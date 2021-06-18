@@ -40,6 +40,7 @@ var hitboxesSlider;
 var hitboxesSize=3;
 var mutationRateSlider;
 //NN Display
+var nnDisplay;
 var nnDS = [300,250];//nnDisplaySize
 var nnMove = [550,520];
 const nodeSize = 15;
@@ -154,8 +155,10 @@ function draw(){
 		   ground.update();
 			//Creatures display and neat implementation
 		   for(i=0;i<numGen;i++){
-		     neat.setInputs(birds[i].inputss(),i);
-				 neat.setFitness(birds[i].timeScore/2+birds[i].score*1000+birds[i].interScore*50,i);
+         if(birds[i].alive){
+  		     neat.setInputs(birds[i].inputss(),i);
+  				 neat.setFitness(birds[i].timeScore/2+birds[i].score*1000+birds[i].interScore*50,i);
+         }
 		   }
 		   neat.feedForward();
 			 let tempBest = neat.getBestCreature();
@@ -195,7 +198,11 @@ function draw(){
 
 	//Display network
 	let bestI = neat.getBestCreature()[1];
-	image(neat.getNeuralDisplay(bestI, nnDS.x, nnDS.y, nodeSize) ,nnMove.x,nnMove.y);
+  if(nnDisplay){
+    nnDisplay.remove();
+  }
+  nnDisplay = neat.getNeuralDisplay(bestI, nnDS.x, nnDS.y, nodeSize);
+	image(nnDisplay, nnMove.x, nnMove.y);
 }
 
 function killAll(){

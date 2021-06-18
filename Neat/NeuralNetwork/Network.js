@@ -64,8 +64,8 @@ class NeuralNetwork{
   }
 
   setInputs(inputs){
-    if(inputs.length === this.layer[0].node.length){
-      for(let x=0;x<inputs.length;x++){
+    if(inputs.length >= this.layer[0].node.length){
+      for(let x=0;x<this.layer[0].node.length;x++){
         this.layer[0].node[x].setValue(inputs[x]);
       }
     }

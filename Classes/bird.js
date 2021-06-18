@@ -104,8 +104,8 @@ class Bird{
   inputss(){
     let input = [];
 
-    input[0]=int(dist(this.x+this.size/2,this.y+this.height/2,(this.closest().getX()+this.closest().bottomPipe.width),(this.closest().topPipe.topY+this.closest().topPipe.height)));
-    input[1]=int(dist(this.x+this.size/2,this.y+this.height/2,(this.closest().getX()+this.closest().bottomPipe.width),this.closest().bottomPipe.topY));
+    input[0]=int(dist(this.x+this.size/2,this.y+this.height/2,(this.closest().getX()+this.closest().bottomPipe.width),(this.closest().topPipe.topY+this.closest().topPipe.height))); //Distance to closest top pipe
+    input[1]=int(dist(this.x+this.size/2,this.y+this.height/2,(this.closest().getX()+this.closest().bottomPipe.width),this.closest().bottomPipe.topY)); //Distance to closest bottom pipe
     input[2]=(this.y+this.height/2)-(this.closest().topPipe.topY+this.closest().topPipe.height);
     input[3]=this.closest().bottomPipe.topY-(this.y+this.height/2);
     /*
