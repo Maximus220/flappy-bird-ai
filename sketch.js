@@ -139,9 +139,9 @@ function draw(){
 	if(globalSpeed!=0){
 		for (let n = 0; n < globalSpeed; n++) {
 			//BG and components display
-			ground.show();
-		   pipePair.show();
-		   pipePair2.show();
+			 if(n==globalSpeed-1) ground.show();
+		   if(n==globalSpeed-1) pipePair.show();
+		   if(n==globalSpeed-1) pipePair2.show();
 		   if(pipePair.offscreen()){
 		     pipePair = new PipePair();
 		   }else{
@@ -167,7 +167,7 @@ function draw(){
 				if(birds[i].alive){
 			     birds[i].update();
 					 if(tempBest[1]!=i){
-						 birds[i].show();
+						 if(n==globalSpeed-1) birds[i].show();
 					 }
 			     if(neat.getOutput(i)[0]>=0.5){
 			       birds[i].flap();
@@ -176,7 +176,7 @@ function draw(){
 		   }
 			 if(tempBest[1]>=0&&tempBest[1]<numGen){
 				 if(birds[tempBest[1]].alive){
-				 	birds[tempBest[1]].show(true);
+				 	if(n==globalSpeed-1) birds[tempBest[1]].show(true);
 					}
 				}
 		   if(allDead()){

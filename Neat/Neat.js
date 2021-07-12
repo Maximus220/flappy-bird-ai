@@ -84,7 +84,7 @@ class Neat{
       for(let y=0;y<parents[0].genes[x].length;y++){ //For each nodes
         let tWeights = [];
         for(let z=0;z<parents[0].genes[x][y].length;z++){ //For each weights
-          tWeights.push((parseFloat(parents[0].genes[x][y])+parseFloat(parents[1].genes[x][y]))/2);
+          tWeights.push((parseFloat(parents[0].genes[x][y][z])+parseFloat(parents[1].genes[x][y][z]))/2);
         }
         tNodes.push(tWeights);
       }
