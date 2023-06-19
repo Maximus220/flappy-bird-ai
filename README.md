@@ -3,6 +3,9 @@ Flappy Bird AI using Neat algorithm.
 
 ## 📜 Demo 📜
 
+<div align="center" font-weight="bold">
+	<img src="https://maxime.click/res/projects/flappy.png" width="500">
+</div>
 
 ## ⚠️ WARNING ⚠️
 Some devices could encounter issues by increasing the population size or the speed too much. Don't increase these values if you think your device isn't good enough.
